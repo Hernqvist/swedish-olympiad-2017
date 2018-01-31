@@ -53,5 +53,4 @@ tc large-04 generator_random n=100000 t=0.8
 tc large-05 generator_random n=10 t=0.2 seed=1032
 tc large-06 generator_random n=10 t=0.2 seed=1055
 
-generate_grader
 cleanup_programs

@@ -28,5 +28,5 @@ tc g2-3 generator_all n=300  max_l=300000
 tc g2-4 generator_all n=400  max_l=400000
 tc g2-5 generator_all n=1000 max_l=500000
 
-generate_grader
+
 cleanup_programs

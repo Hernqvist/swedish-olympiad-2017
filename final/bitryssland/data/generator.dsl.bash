@@ -57,5 +57,4 @@ tc large-18 generator_off_by_one
 tc large-19 generator_off_by_one
 tc large-20 generator_off_by_one
 
-generate_grader
 cleanup_programs

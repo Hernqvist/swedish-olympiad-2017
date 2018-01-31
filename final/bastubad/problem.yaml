@@ -3,8 +3,6 @@ source: Programmeringsolympiadens final 2017
 rights_owner: Programmeringsolympiaden
 license: cc by-sa
 grading:
-    on_reject: grade
     objective: max
-    range: 0 100
 validator_flags: float_tolerance 1e-5
 type: scoring

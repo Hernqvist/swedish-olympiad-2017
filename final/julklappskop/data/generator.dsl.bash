@@ -50,5 +50,5 @@ tc large-02 generator_random n=13 k=19 m=100000
 tc large-03 generator_random n=14 k=100 m=100000
 tc large-04 generator_random n=14 k=100000 m=100000
 
-generate_grader
+
 cleanup_programs

@@ -85,12 +85,15 @@ compile () {
 setup_dirs () {
   rm -rf groups cases secret
   mkdir -p secret
-  echo "grading: custom
-grader_flags: ignore" > sample/testdata.yaml
-  echo "grading: custom
-grader_flags: groups" > secret/testdata.yaml
-  echo "grading: custom
-grader_flags: sum" > testdata.yaml
+  echo "on_reject: continue
+range: -1 0
+accept_score: 0
+grader_flags: no_errors" > sample/testdata.yaml
+  echo "on_reject: continue
+range: 0 100" > secret/testdata.yaml
+  echo "range: 0 100
+on_reject: continue
+grader_flags: always_accept" > testdata.yaml
 }
 
 # Solve a test case using the solution
@@ -100,7 +103,6 @@ solve () {
   $($execmd < $1.in > $1.ans)
 }
 
-CURGROUP=-1
 CURGROUP_NAME=-1
 SEED=58723
 
@@ -109,7 +111,7 @@ SEED=58723
 use_solution () {
   path=$SOLUTION_BASE/$1
   SOLUTION=$(base $path)
-  compile $path
+  compile $path $2
 }
 
 
@@ -132,27 +134,38 @@ cleanup_programs () {
   done
   rm -rf __pycache__
   rm -rf *.class
-  rm cases groups
 }
 
 # Arguments testgroupname score
 group () {
+  mkdir secret/$1
   CURGROUP_NAME=$1
-  CURGROUP=$(( CURGROUP+1 ))
   echo 
-  echo "Group $CURGROUP ($1)"
+  echo "Group $CURGROUP_NAME ($1)"
   echo $1 $2 >> groups
   groups[$1]=""
+
+  echo "on_reject: break
+accept_score: $2
+range: 0 $2
+grader_flags: min" > secret/$1/testdata.yaml
 }
 
 # Arguments: testcasename generator arguments...
 tc () {
   groups[$CURGROUP_NAME]="${groups[$CURGROUP_NAME]} $1"
-  echo $1 $CURGROUP >> cases
-  if [[ ${cases[$1]} == "yes" ]]
+
+  if [[ ${cases[$1]} != "" ]]
   then
     if [[ $# == 1 ]]; then
-      echo "Reusing secret/$1"
+      if [[ ${cases[$1]} == $CURGROUP_NAME ]]; then
+        echo "Skipping duplicate case secret/$1"
+      else
+        cp secret/${cases[$1]}/$1.in secret/${CURGROUP_NAME}/$1.in
+        cp secret/${cases[$1]}/$1.ans secret/${CURGROUP_NAME}/$1.ans
+        cases[$1]=$CURGROUP_NAME
+        echo "Reusing secret/$1"
+      fi
       return 0
     else
       echo "ERROR: duplicate test case name $1"
@@ -160,13 +173,13 @@ tc () {
     fi
   fi
   SEED=$(( SEED+1 ))
-  echo "Generating case secret/$1..."
+  echo "Generating case secret/$2/$1..."
   execmd=${programs[$2]}
-  $($execmd "${@:3}" $SEED > secret/$1.in)
+  $($execmd "${@:3}" $SEED > secret/$CURGROUP_NAME/$1.in)
 
   echo "Solving case secret/$1..."
-  solve secret/$1
-  cases[$1]="yes"
+  solve secret/$CURGROUP_NAME/$1
+  cases[$1]=$CURGROUP_NAME
 }
 
 # Include all testcases in another group

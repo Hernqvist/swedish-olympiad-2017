@@ -34,20 +34,21 @@ tc unw-2 generator_all n=70000 l=50 mode=islands unw=1
 tc unw-3 generator_all n=1000 l=50 m=1000 mode=random unw=1
 tc unw-4 generator_all n=70000 l=50 m=100000 mode=random unw=1
 
-group nonodesmall 0
+group nonode 23
 tc nonodesmall-1 generator_all n=50  l=10 mode=nonode small=1
 tc nonodesmall-2 generator_all n=60  l=20 mode=nonode small=1
 tc nonodesmall-3 generator_all n=80  l=30 mode=nonode small=1
 tc nonodesmall-4 generator_all n=100 l=4 mode=nonode small=1
 tc nonodesmall-5 generator_all n=200 l=50 mode=nonode small=1
-
-group nonode 23
-include_group nonodesmall
 tc nonode-1 generator_all n=70000 l=50 mode=nonode
 tc nonode-2 generator_all n=100000 l=7 m=1 mode=random
 
 group small 29
-include_group nonodesmall
+tc nonodesmall-1
+tc nonodesmall-2
+tc nonodesmall-3
+tc nonodesmall-4
+tc nonodesmall-5
 tc small-1 generator_all n=2000 l=2 m=1000 mode=random small=1
 tc small-2 generator_all n=2000 l=50 m=1000 mode=random small=1
 tc small-3 generator_all n=2000 l=20 m=2000 mode=random small=1
@@ -68,5 +69,5 @@ tc normal-3 generator_all n=1000 l=20 m=5000 mode=random
 tc normal-4 generator_all n=100000 l=50 m=100000 mode=random
 tc normal-5 generator_all n=100000 l=4 m=100000 mode=random
 
-generate_grader
+
 cleanup_programs
